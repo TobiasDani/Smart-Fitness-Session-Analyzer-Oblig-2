@@ -7,11 +7,13 @@ class Participant:
         baseline_heart_rate,
         baseline_skin_response,
         baseline_temperature,
+        name=None,
     ):
         self.participant_id = participant_id
         self.baseline_heart_rate = baseline_heart_rate
         self.baseline_skin_response = baseline_skin_response
         self.baseline_temperature = baseline_temperature
+        self.name = name
 
     @staticmethod
     def is_valid_baseline(heart_rate, skin_response, temperature):

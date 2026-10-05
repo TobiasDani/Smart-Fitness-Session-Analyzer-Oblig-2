@@ -1,54 +1,89 @@
-from observation import Observation
-from participant import Participant
-from report import Report
-from sample_data import get_sample_data
-from session import Session
+import argparse
+
+from fitness.csv_reader import load_participants, load_sessions
+from fitness.reporting import write_outputs
 
 
-def new_fitness_session(profile_in, observations_in):
-    """Convert raw data into participant, observations, and a session object."""
-    if not Participant.is_valid_baseline(
-        profile_in["baseline_heart_rate"],
-        profile_in["baseline_skin_response"],
-        profile_in["baseline_temperature"],
-    ):
-        raise ValueError("Invalid participant baseline data.")
-
-    profile = Participant(
-        profile_in["participant_id"],
-        profile_in["baseline_heart_rate"],
-        profile_in["baseline_skin_response"],
-        profile_in["baseline_temperature"],
+def parse_arguments():
+    parser = argparse.ArgumentParser(
+        description="Analyze fitness sessions from CSV files."
     )
 
-    observations = [
-        Observation(
-            obs["timestamp"],
-            obs["heart_rate"],
-            obs["skin_response"],
-            obs["temperature"],
-            obs["activity_level"],
-            obs["signal_quality"],
-        )
-        for obs in observations_in
-    ]
+    parser.add_argument(
+        "--profiles",
+        default="data/participants.csv",
+        help="Path to participant profile CSV file",
+    )
 
-    session = Session(profile)
-    for obs in observations:
-        session.add_single_observation(obs)
+    parser.add_argument(
+        "--sessions",
+        default="data/fitness_sessions.csv",
+        help="Path to valid fitness session CSV file",
+    )
 
-    return profile, session
+    parser.add_argument(
+        "--invalid-sessions",
+        default="data/fitness_sessions_invalid.csv",
+        help="Path to intentionally invalid fitness session CSV file",
+    )
+
+    parser.add_argument(
+        "--output",
+        default="output",
+        help="Directory for generated reports",
+    )
+
+    return parser.parse_args()
 
 
 def main():
-    """Run the basic fitness session analysis workflow."""
-    profile, observations = get_sample_data()
-    profile, session = new_fitness_session(profile, observations)
+    args = parse_arguments()
 
-    report = Report(session)
-    report.print_report()
+    participants, rejected_participants = load_participants(
+        args.profiles
+    )
+
+    valid_sessions, rejected_valid = load_sessions(
+        args.sessions,
+        participants,
+    )
+
+    invalid_sessions, rejected_invalid = load_sessions(
+        args.invalid_sessions,
+        participants,
+    )
+
+    sessions = {
+        **valid_sessions,
+        **invalid_sessions,
+    }
+
+    rejected = (
+        rejected_participants
+        + rejected_valid
+        + rejected_invalid
+    )
+
+    created_files = write_outputs(
+        sessions,
+        rejected,
+        args.output,
+    )
+
+    accepted_session_rows = sum(
+        len(session.observations)
+        for session in sessions.values()
+    )
+
+    accepted_rows = len(participants) + accepted_session_rows
+
+    print(f"Accepted rows: {accepted_rows}")
+    print(f"Rejected rows: {len(rejected)}")
+
+    print("Created files:")
+    for file in created_files:
+        print(file)
 
 
 if __name__ == "__main__":
     main()
-

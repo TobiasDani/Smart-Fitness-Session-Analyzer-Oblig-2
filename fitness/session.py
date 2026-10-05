@@ -1,4 +1,4 @@
-from utils import (
+from fitness.utils import (
     calculate_average,
     calculate_drop,
     calculate_maximum,
@@ -13,8 +13,9 @@ class Session:
     the observation list, rather than inheriting from them.
     """
 
-    def __init__(self, participant):
+    def __init__(self, participant, session_id=None):
         self.participant = participant
+        self.session_id = session_id
         self.observations = []
         self.rejected_observations = 0
         self._classification = "unclassified"

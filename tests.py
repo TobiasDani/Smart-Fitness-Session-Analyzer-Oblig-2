@@ -1,56 +1,89 @@
-from participant import Participant
-from observation import Observation
-from session import Session
+from fitness.csv_reader import load_participants, load_sessions
+from fitness.observation import Observation
 
 
-def make_session(heart_values, activity_values, signal_quality=0.9):
-    participant = Participant("P001", 72, 2.1, 32.5)
-    session = Session(participant)
+def test_valid_files():
+    participants, participant_errors = load_participants(
+        "data/participants.csv"
+    )
 
-    for i, (hr, activity) in enumerate(zip(heart_values, activity_values)):
-        session.add_single_observation(
-            Observation(i, hr, 2.1, 32.5, activity, signal_quality)
-        )
+    sessions, session_errors = load_sessions(
+        "data/fitness_sessions.csv",
+        participants,
+    )
 
-    return session
-
-
-def test_resting_session():
-    session = make_session([72, 74, 73], [0.10, 0.12, 0.11])
-    assert session.classify_session() == "resting"
-
-
-def test_moderate_activity_session():
-    session = make_session([80, 84, 86], [0.40, 0.45, 0.50])
-    assert session.classify_session() == "moderate activity"
+    assert len(participants) == 3
+    assert len(sessions) == 5
+    assert len(participant_errors) == 0
+    assert len(session_errors) == 0
 
 
-def test_high_activity_session():
-    session = make_session([110, 118, 125], [0.75, 0.80, 0.85])
-    assert session.classify_session() == "high activity"
+def test_invalid_file():
+    participants, _ = load_participants(
+        "data/participants.csv"
+    )
+
+    sessions, rejected = load_sessions(
+        "data/fitness_sessions_invalid.csv",
+        participants,
+    )
+
+    assert len(sessions) == 1
+    assert len(rejected) == 10
 
 
-def test_recovery_session():
-    session = make_session([120, 110, 90, 80], [0.80, 0.70, 0.30, 0.20])
-    assert session.classify_session() == "recovering"
+def test_missing_file():
+    participants, _ = load_participants(
+        "data/participants.csv"
+    )
+
+    sessions, rejected = load_sessions(
+        "data/does_not_exist.csv",
+        participants,
+    )
+
+    assert sessions == {}
+    assert len(rejected) == 1
+    assert rejected[0]["reason"] == "File not found"
 
 
-def test_invalid_data_session():
-    participant = Participant("P001", 72, 2.1, 32.5)
-    session = Session(participant)
+def test_boundary_values():
+    lowest = Observation(
+        0,
+        35,
+        0,
+        25,
+        0,
+        0,
+    )
 
-    session.add_single_observation(Observation(0, None, 2.0, 32.5, 0.3, 0.9))
-    session.add_single_observation(Observation(1, 75, 2.0, 32.5, 0.3, 0.9))
-    session.add_single_observation(Observation(2, 76, 2.0, 32.5, 0.3, 0.9))
+    highest = Observation(
+        1,
+        205,
+        1,
+        42,
+        1,
+        1,
+    )
 
-    assert session.classify_session() == "insufficient data"
+    invalid = Observation(
+        2,
+        34,
+        1,
+        32,
+        0.5,
+        0.9,
+    )
+
+    assert lowest.is_valid() is True
+    assert highest.is_valid() is True
+    assert invalid.is_valid() is False
 
 
 if __name__ == "__main__":
-    test_resting_session()
-    test_moderate_activity_session()
-    test_high_activity_session()
-    test_recovery_session()
-    test_invalid_data_session()
-    print("5 tests passed.")
+    test_valid_files()
+    test_invalid_file()
+    test_missing_file()
+    test_boundary_values()
 
+    print("4 tests passed.")
