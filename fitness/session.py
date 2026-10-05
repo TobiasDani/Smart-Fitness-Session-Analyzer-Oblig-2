@@ -118,7 +118,7 @@ class Session:
             self.classification = "high activity"
             return self.classification
 
-        if avg_activity >= 0.2:
+        if avg_activity >= 0.2 or avg_hr > baseline_hr + 8:
             self.classification = "moderate activity"
             return self.classification
 
