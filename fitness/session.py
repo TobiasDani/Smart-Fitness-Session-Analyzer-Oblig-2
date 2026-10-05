@@ -1,4 +1,4 @@
-from fitness.utils import (
+from .utils import (
     calculate_average,
     calculate_drop,
     calculate_maximum,

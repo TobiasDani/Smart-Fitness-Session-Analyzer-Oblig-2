@@ -1,0 +1,10 @@
+File: data\fitness_sessions_invalid.csv, row: 3, field: heart_rate, reason: invalid literal for int() with base 10: 'fast'
+File: data\fitness_sessions_invalid.csv, row: 4, field: participant_id, reason: Invalid participant ID: 001
+File: data\fitness_sessions_invalid.csv, row: 5, field: activity_level, reason: Missing required field
+File: data\fitness_sessions_invalid.csv, row: 6, field: signal_quality, reason: Signal quality must be between 0 and 1
+File: data\fitness_sessions_invalid.csv, row: 7, field: session_id, reason: Invalid session ID: FIT-26-102
+File: data\fitness_sessions_invalid.csv, row: 8, field: participant_id, reason: Unknown participant ID: P999
+File: data\fitness_sessions_invalid.csv, row: 9, field: timestamp, reason: invalid literal for int() with base 10: 'two'
+File: data\fitness_sessions_invalid.csv, row: 10, field: heart_rate, reason: Heart rate is outside accepted range
+File: data\fitness_sessions_invalid.csv, row: 11, field: skin_response, reason: Skin response cannot be negative
+File: data\fitness_sessions_invalid.csv, row: 12, field: row, reason: Unexpected number of columns

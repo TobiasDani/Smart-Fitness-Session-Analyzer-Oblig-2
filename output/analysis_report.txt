@@ -1,0 +1,36 @@
+Session: FIT-2026-001
+Participant: P001
+Classification: resting
+Usable observations: 6
+Explanation: The activity level and heart rate stayed low and close to the baseline, so the session was classified as resting.
+
+Session: FIT-2026-002
+Participant: P002
+Classification: moderate activity
+Usable observations: 6
+Explanation: The activity level was above the resting range without reaching the high activity threshold.
+
+Session: FIT-2026-003
+Participant: P003
+Classification: high activity
+Usable observations: 6
+Explanation: The activity level or heart rate was high enough to classify the session as high activity.
+
+Session: FIT-2026-004
+Participant: P001
+Classification: recovering
+Usable observations: 6
+Explanation: The session shows a clear drop in heart rate and activity toward the end, which is consistent with recovery.
+
+Session: FIT-2026-005
+Participant: P002
+Classification: insufficient data
+Usable observations: 5
+Explanation: There was not enough valid data, or the signal quality was too poor, so a reliable classification could not be made.
+
+Session: FIT-2026-101
+Participant: P001
+Classification: insufficient data
+Usable observations: 1
+Explanation: There was not enough valid data, or the signal quality was too poor, so a reliable classification could not be made.
+

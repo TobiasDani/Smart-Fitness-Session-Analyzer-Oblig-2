@@ -52,19 +52,18 @@ def load_participants(file_path):
 
                     field = "baseline_heart_rate"
                     heart_rate = int(row["baseline_heart_rate"])
+                    if not 35 <= heart_rate <= 205:
+                        raise InvalidRecordError("Heart rate is outside accepted range")
 
                     field = "baseline_skin_response"
                     skin_response = float(row["baseline_skin_response"])
+                    if skin_response < 0:
+                        raise InvalidRecordError("Skin response cannot be negative")
 
                     field = "baseline_temperature"
                     temperature = float(row["baseline_temperature"])
-
-                    if not Participant.is_valid_baseline(
-                        heart_rate,
-                        skin_response,
-                        temperature,
-                    ):
-                        raise InvalidRecordError("Invalid baseline values")
+                    if not 25 <= temperature <= 42:
+                        raise InvalidRecordError("Temperature is outside accepted range")
 
                     participant = Participant(
                         participant_id,
