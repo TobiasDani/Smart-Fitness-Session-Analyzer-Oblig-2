@@ -7,11 +7,7 @@ from .utils import (
 
 
 class Session:
-    """A session is built from one participant and many observation windows.
-
-    This is a simple example of composition: the session owns the participant and
-    the observation list, rather than inheriting from them.
-    """
+    """Represents one fitness session and its observations."""
 
     def __init__(self, participant, session_id=None):
         self.participant = participant
